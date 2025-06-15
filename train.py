@@ -9,6 +9,7 @@ import tqdm
 import evaluate
 import wandb
 
+from dotenv import load_dotenv
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from datasets import load_dataset
@@ -18,8 +19,10 @@ from peft import LoraConfig, TaskType, get_peft_model
 # === global variables === #
 SEED = torch.manual_seed(42)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-#TODO
+load_dotenv()
 
+# === wandb logging === #
+wanb.login(key=os.getenv("WANDB_AP_KEY"))
 
 # === download the dataset and split it === #
 ds = load_dataset("KagglingFace/vit-cats-dogs") # this dataset has only the train split
@@ -49,7 +52,7 @@ def preprocess(example):
 ds = ds.map(preprocess, batched=False)
 
 # === training loop === #
-ds.set_format(type="torch", columns=["pixel_values", "label"])
+ds.set_format(type="torch", columns=["pixel_values", "labels"])
 
 accuracy = evaluate.load("accuracy")
 
