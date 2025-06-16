@@ -1,4 +1,4 @@
 .DS_Store
 .env
 
-./preprocessed_data
+preprocessed_data/
