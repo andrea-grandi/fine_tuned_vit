@@ -55,7 +55,7 @@ print(f"Classes: {dataset_info['class_names']}")
 # === load the model to finetune === #
 processor_path = os.path.join(PREPROCESSED_DATA_DIR, "processor")
 processor = AutoImageProcessor.from_pretrained(processor_path)
-model_id = AutoModelForImageClassification.from_pretrained(
+model = AutoModelForImageClassification.from_pretrained(
     dataset_info['model_name']
 )
 
@@ -83,9 +83,9 @@ def compute_metrics(eval_pred):
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
     eval_strategy="steps",
-    eval_steps=50,
+    eval_steps=20,
     save_strategy="steps",
-    save_steps=100,
+    save_steps=40,
     metric_for_best_model="eval_accuracy",
     num_train_epochs=EPOCHS,
     logging_dir=LOGS,

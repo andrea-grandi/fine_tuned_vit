@@ -1,0 +1,16 @@
+{"time":"2025-06-16T17:21:42.364544+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/andreagrandi/Developer/fine_tuned_vit/wandb/run-20250616_172142-3wmprahg/logs/debug-core.log"}
+{"time":"2025-06-16T17:21:42.674536+02:00","level":"INFO","msg":"stream: created new stream","id":"3wmprahg"}
+{"time":"2025-06-16T17:21:42.674596+02:00","level":"INFO","msg":"stream: started","id":"3wmprahg"}
+{"time":"2025-06-16T17:21:42.674625+02:00","level":"INFO","msg":"sender: started","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:42.674649+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:42.674635+02:00","level":"INFO","msg":"handler: started","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:42.902815+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-16T17:21:43.868191+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-16T17:21:43.868241+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-16T17:21:44.177161+02:00","level":"INFO","msg":"stream: closing","id":"3wmprahg"}
+{"time":"2025-06-16T17:21:44.177195+02:00","level":"WARN","msg":"sender: received Exit record more than once, ignoring"}
+{"time":"2025-06-16T17:21:44.728772+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-16T17:21:45.103638+02:00","level":"INFO","msg":"handler: closed","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:45.104452+02:00","level":"INFO","msg":"sender: closed","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:45.105718+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"3wmprahg"}
+{"time":"2025-06-16T17:21:45.105832+02:00","level":"INFO","msg":"stream: closed","id":"3wmprahg"}

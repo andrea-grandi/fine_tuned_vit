@@ -1,0 +1,16 @@
+{
+  "os":  "macOS-15.5-arm64-arm-64bit",
+  "python":  "CPython 3.10.16",
+  "startedAt":  "2025-06-16T15:21:42.362231Z",
+  "program":  "/Users/andreagrandi/Developer/fine_tuned_vit/train.py",
+  "codePath":  "train.py",
+  "git":  {
+    "remote":  "https://github.com/andrea-grandi/fine_tuned_vit",
+    "commit":  "249ba21c622f9981cdcc7ffea400796be69abece"
+  },
+  "email":  "andrea.grandi@tiscali.it",
+  "root":  "/Users/andreagrandi/Developer/fine_tuned_vit",
+  "host":  "mbp",
+  "executable":  "/Users/andreagrandi/Developer/fine_tuned_vit/.venv/bin/python3",
+  "codePathLocal":  "train.py"
+}

@@ -1,0 +1,9 @@
+  0%|                                                                     | 0/12500 [00:00<?, ?it/s]/Users/andreagrandi/Developer/fine_tuned_vit/.venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:683: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+  0%|▎                                                         | 61/12500 [00:43<2:25:18,  1.43it/s]
+{'loss': 7.7695, 'grad_norm': 29.04435920715332, 'learning_rate': 4.9964e-05, 'epoch': 0.0}
+{'loss': 1.5169, 'grad_norm': 12.151695251464844, 'learning_rate': 4.9924000000000005e-05, 'epoch': 0.01}
+{'loss': 0.2515, 'grad_norm': 1.3104313611984253, 'learning_rate': 4.9884000000000006e-05, 'epoch': 0.01}
+{'loss': 0.1283, 'grad_norm': 17.485401153564453, 'learning_rate': 4.9844e-05, 'epoch': 0.02}
+{'loss': 0.1317, 'grad_norm': 0.04486589506268501, 'learning_rate': 4.9804e-05, 'epoch': 0.02}
+{'loss': 0.0145, 'grad_norm': 0.01868041791021824, 'learning_rate': 4.976400000000001e-05, 'epoch': 0.02}
