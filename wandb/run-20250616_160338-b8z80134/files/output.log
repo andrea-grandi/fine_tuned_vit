@@ -1,0 +1,3 @@
+  0%|                                                                                            | 0/6250 [00:00<?, ?it/s]/Users/andreagrandi/Developer/fine_tuned_vit/.venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:683: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+Training failed with error: DataLoader worker (pid(s) 77399, 77400, 77401) exited unexpectedly

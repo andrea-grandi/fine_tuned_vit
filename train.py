@@ -8,11 +8,12 @@ import matplotlib.pyplot as plt
 import tqdm
 import evaluate
 import wandb
+import json
 
 from dotenv import load_dotenv
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from transformers import AutoModelForImageClassification, AutoImageProcessor, TrainingArguments, Trainer, DefaultDataCollator
 from peft import LoraConfig, TaskType, get_peft_model
 
@@ -22,6 +23,10 @@ EPOCHS = 5
 LR = 5e-4
 WARMUP_STEPS = 100
 WEIGHT_DECAY = 0.01
+LOGS = "./logs"
+PREPROCESSED_DATA_DIR = "./preprocessed_data"
+OUTPUT_DIR = "./vit_fine_tuned"
+FINAL_MODEL_DIR = "./model"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 torch.manual_seed(SEED)
@@ -34,24 +39,33 @@ load_dotenv()
 # === wandb logging === #
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
-# === download the dataset and split it === #
-ds = load_dataset("KagglingFace/vit-cats-dogs") # this dataset has only the train split
-ds = ds['train'].train_test_split(test_size=0.2)
-print(f"Train samples: {len(ds['train'])}, Test samples: {len(ds['test'])}")
-#print(ds)
+# === load the dataset === #
+if not os.path.exists(PREPROCESSED_DATA_DIR):
+    raise FileNotFoundError(f"Preprocessed data directory not found: {PREPROCESSED_DATA_DIR}")
+
+ds = load_from_disk(PREPROCESSED_DATA_DIR)
+
+with open(os.path.join(PREPROCESSED_DATA_DIR, "dataset_info.json"), "r") as f:
+    dataset_info = json.load(f)
+
+print(f"Train samples: {dataset_info['train_samples']}")
+print(f"Test samples: {dataset_info['test_samples']}")
+print(f"Classes: {dataset_info['class_names']}")
 
 # === load the model to finetune === #
-processor = AutoImageProcessor.from_pretrained(
-    "google/vit-base-patch16-224",
-    use_fast=True
-) # this is (like) the tokenizer
+processor_path = os.path.join(PREPROCESSED_DATA_DIR, "processor")
+processor = AutoImageProcessor.from_pretrained(processor_path)
 model_id = AutoModelForImageClassification.from_pretrained(
-    "google/vit-base-patch16-224"
+    dataset_info['model_name'],
+    num_labels=len(dataset_info['class_names']),
+    id2label={0: "cat", 1: "dog"},
+    label2id={"cat": 0, "dog": 1},
+    ignore_mismatched_sizes=True
 )
 
 # === load and setup LoRA for peft === #
 peft_config = LoraConfig(
-    task_type=TaskType.FEATURE_EXTRACTION,
+    task_type=TaskType.TOKEN_CLS,
     r=16,
     lora_alpha=32,
     lora_dropout=0.1,
@@ -60,22 +74,6 @@ peft_config = LoraConfig(
 
 model = get_peft_model(model_id, peft_config)
 model.print_trainable_parameters()
-
-# === prepare dataset for training === #
-def preprocess(examples):
-    images = [img.convert("RGB") for img in examples['image']]
-    processed = processor(images, return_tensors="pt")
-    labels = examples['label']
-    if isinstance(labels[0], str):
-        label_map = {"cat": 0, "dog": 1}
-        labels = [label_map[label] for label in labels]
-
-    return {
-        "pixel_values": processed["pixel_values"],
-        "labels": labels
-    }
-
-ds = ds.map(preprocess, batched=True, batch_size=32, remove_columns=["image"])
 
 # === training loop === #
 accuracy = evaluate.load("accuracy")
@@ -86,13 +84,13 @@ def compute_metrics(eval_pred):
     return accuracy.compute(predictions=preds, references=labels)
 
 training_args = TrainingArguments(
-    output_dir="./vit-cats-dogs",
+    output_dir=OUTPUT_DIR,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     save_strategy="epoch",
     num_train_epochs=EPOCHS,
-    logging_dir="./logs",
+    logging_dir=LOGS,
     logging_strategy="steps",
     logging_steps=10,
     save_total_limit=2,
@@ -117,7 +115,7 @@ trainer = Trainer(
     args=training_args,
     train_dataset=ds['train'],
     eval_dataset=ds['test'],
-    tokenizer=processor,  
+    processing_class=processor,  
     data_collator=DefaultDataCollator(), 
     compute_metrics=compute_metrics,
 )
@@ -134,10 +132,23 @@ try:
         print(f" {key}: {value}")
     
     # save the model
-    trainer.save_model("./vit-cats-dogs-final")
-    processor.save_pretrained("./vit-cats-dogs-final")
+    print(f"Saving final model to {FINAL_MODEL_DIR}...")
+    trainer.save_model(FINAL_MODEL_DIR)
+    processor.save_pretrained(FINAL_MODEL_DIR)
 
-    print("Training completed succesfully")
+    # Save training info
+    training_info = {
+        "final_metrics": metrics,
+        "training_args": training_args.to_dict(),
+        "model_name": dataset_info['model_name'],
+        "dataset_info": dataset_info
+    }
+    
+    with open(os.path.join(FINAL_MODEL_DIR, "training_info.json"), "w") as f:
+        json.dump(training_info, f, indent=2, default=str)
+
+    print("Training completed successfully!")
+    print(f"Final model saved to: {FINAL_MODEL_DIR}")
 
 except Exception as e:
     print(f"Training failed with error: {e}")

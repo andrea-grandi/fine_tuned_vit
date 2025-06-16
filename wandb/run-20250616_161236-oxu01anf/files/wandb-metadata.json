@@ -1,0 +1,14 @@
+{
+  "os":  "macOS-15.5-arm64-arm-64bit",
+  "python":  "CPython 3.10.16",
+  "startedAt":  "2025-06-16T14:12:36.618126Z",
+  "program":  "<python with no main file>",
+  "git":  {
+    "remote":  "https://github.com/andrea-grandi/fine_tuned_vit",
+    "commit":  "38fb10b95cb954843894d30de7285aae7ab47371"
+  },
+  "email":  "andrea.grandi@tiscali.it",
+  "root":  "/Users/andreagrandi/Developer/fine_tuned_vit",
+  "host":  "mbp",
+  "executable":  "/Users/andreagrandi/Developer/fine_tuned_vit/.venv/bin/python3"
+}
